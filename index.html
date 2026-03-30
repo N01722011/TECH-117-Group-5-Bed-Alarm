@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Try To Sleep</title>
+  <title>Collision Warning System</title>
 
   <!-- Prism.js syntax highlighting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
@@ -46,27 +46,35 @@
   </nav>
  <button class="print-button" onclick="window.print()" style="position: fixed; bottom: 24px; right: 24px; padding: 10px 16px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15); font-size: 0.9rem; z-index: 2000;">  Print This Page </button>
 
-  <h1 id="top">Collision Warning System </h1>
+  <h1 id="top">Try to sleep project </h1>
 <div id="print-hero">
     <img src="" alt="">
 </div>
 
   <section id="information">
     <h2>Project Information</h2>
-    <p><strong>Course:</strong> TECH 117 (Computer Engineering Technology, Fall 2025)</p>
+    <p><strong>Course:</strong> TECH 117 (Computer Engineering Technology, Winter 2026)</p>
     <p><strong>Instructor:</strong> Ph.D. Ana Rodrigues</p>
     <p><strong>Team Members:</strong></p>
     <ul>
-      <li>Praisy Faith</li>
-      <li>Justin</li>
       <li>Enkhbilguun Agaanorov</li>
       <li>Yucheng Hu</li>
+      <li>Praisy Faith Premsingh</li>
+      <li>Justin Clint Federico</li>
     </ul>
   </section>
 
   <section id="introduction">
     <h2>Introduction</h2>
-    <p>The Try to Sleep (Bed Project) is an Arduino project that helps people wake up on time. Many people press the snooze button and go back to sleep. This system makes waking up harder to ignore by using different stages.When the alarm time is reached, the system starts</p> <p><strong>Phase 1</strong>, where a buzzer alarm sounds for 5 minutes like a normal alarm clock.If the person does not turn it off, the system goes to <strong>Phase 2</strong>, where the bed vibrates for 5 minutes to help wake the person up. If the alarm is still not turned off, the system moves to <strong></strong>Phase 3</strong>. In this stage, the bed tilts upward using a servo motor and a bright light turns on. This makes it very difficult for the person to stay in bed.</p><p>This project uses Arduino, a buzzer, a vibration motor, a servo motor, and a light. The goal of this system is to help people wake up and follow a healthy daily routine, which supports United Nations Sustainable Development Goal "Good Health and Well‑Being."
+    <p>The project is to build a <strong>Smart Alarm Bed System</strong> using an Arduino Uno. It is connected to <strong>SDG 3: Good Health and Well-Being</strong> from the <strong>United Nations goals</strong>, focusing on improving daily routines and sleep habits. The system will activate an alarm at a specific time using a real-time clock, produce sound through a buzzer, and control a servo motor to move the bed. It will operate in three phases: first, a buzzer sound; second, the bed shaking left and right; and third, the bed tilting to about 45 degrees. A button will also be included to allow the user to stop the system.
+    </p>
+
+    <p>The project will be considered successful if the alarm triggers at the correct time and each phase runs in the correct order without skipping. The servo motor should move properly during both shaking and tilting, and the buzzer should function correctly in all phases. The system should also stop immediately when the button is pressed and run smoothly without errors.
+    </p>
+      
+    <p>There are several challenges that may make the project harder to complete. These include limited time to build and test the system, difficulty in constructing the mini bed structure, and possible programming bugs or timing errors. There may also be issues when connecting all the components together.
+    </p>
+    <p>To deal with these challenges, alternative plans can be used. The movement can be simplified by only using the tilting function instead of shaking. Each component, such as the buzzer, servo motor, and RTC, can be tested separately before combining them. A smaller or lighter model can be used to make it easier for the servo to move the structure. Timing can also be adjusted if the phases do not work correctly.
     </p>
   </section>
 
@@ -281,56 +289,35 @@ void loop() {
 
   <ul>
     <li>
-      Arduino Project Hub. (n.d.). 
-      <em>Ultrasonic sensor projects.</em> 
-      Arduino Project Hub. 
-      <a href="https://projecthub.arduino.cc/projects/tags/ultrasonic-sensor" target="_blank" rel="noopener noreferrer">
-        https://projecthub.arduino.cc/projects/tags/ultrasonic-sensor
+      Earth'sMotive. (2023.5.Sep). 
+      <em>These alarm clocks will wake you from this world!!!.</em> 
+      <a href="https://www.youtube.com/shorts/gbVUjzkB3_w?feature=share" target="_blank" rel="noopener noreferrer">
+        https://www.youtube.com/shorts/gbVUjzkB3_w?feature=share
       </a>
     </li>
 
     <li>
-      Arduino Project Hub. (n.d.). 
-      <em>Buzzer projects.</em> 
-      Arduino Project Hub. 
-      <a href="https://create.arduino.cc/projecthub/projects/tags/buzzer" target="_blank" rel="noopener noreferrer">
-        https://create.arduino.cc/projecthub/projects/tags/buzzer
+      Fills & Thrills. (2020.20.Feb). 
+      <em>Alarm Clock Bed - Tilting Bed to Help You WAKE UP.</em> 
+      <a href="https://youtu.be/vPypdqkZM4c" target="_blank" rel="noopener noreferrer">
+        https://youtu.be/vPypdqkZM4c
       </a>
     </li>
 
     <li>
-      Arduino Project Hub. (n.d.). 
-      <em>LED projects.</em> 
-      Arduino Project Hub. 
-      <a href="https://projecthub.arduino.cc/projects/tags/led" target="_blank" rel="noopener noreferrer">
-        https://projecthub.arduino.cc/projects/tags/led
+      Circuit design Alarm Clock. (2016.May). 
+      <em>Alarm projects.</em> 
+      Tinkercad Designs. 
+      <a href="https://www.tinkercad.com/embed/aRCwDYk4p3q" target="_blank" rel="noopener noreferrer">
+        https://www.tinkercad.com/embed/aRCwDYk4p3q
       </a>
     </li>
 
     <li>
-      Instructables. (n.d.). 
-      <em>Distance measurement using ultrasonic sensor.</em> 
-      Instructables. 
-      <a href="https://www.instructables.com/Arduino-Distance-Measurement-Using-Ultrasonic-Senso/" target="_blank" rel="noopener noreferrer">
-        https://www.instructables.com/Arduino-Distance-Measurement-Using-Ultrasonic-Senso/
-      </a>
-    </li>
-
-    <li>
-      Circuit Basics. (n.d.). 
-      <em>How to use an ultrasonic sensor with Arduino.</em> 
-      Circuit Basics. 
-      <a href="https://www.circuitbasics.com/how-to-use-an-ultrasonic-sensor-with-arduino/" target="_blank" rel="noopener noreferrer">
-        https://www.circuitbasics.com/how-to-use-an-ultrasonic-sensor-with-arduino/
-      </a>
-    </li>
-
-    <li>
-      Last Minute Engineers. (n.d.). 
-      <em>Ultrasonic sensor tutorial.</em> 
-      Last Minute Engineers. 
-      <a href="https://lastminuteengineers.com/ultrasonic-sensor-arduino-tutorial/" target="_blank" rel="noopener noreferrer">
-        https://lastminuteengineers.com/ultrasonic-sensor-arduino-tutorial/
+      Mini wings. (2020.27.May). 
+      <em>How to make a bed in cardboard.</em>  
+      <a href="https://www.youtube.com/watch?v=v3KO2Ik50U4" target="_blank" rel="noopener noreferrer">
+        https://www.youtube.com/watch?v=v3KO2Ik50U4
       </a>
     </li>
   </ul>
