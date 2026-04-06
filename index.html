@@ -82,7 +82,7 @@
     <h2>Circuit Diagram</h2>
     <p>The ultrasonic sensor measures distance; the Arduino activates LEDs and the buzzer according to distance
       thresholds.</p>
-    <img src="collision-warning-system-Arduino.jpg" alt="Arduino collision warning system">
+    <img src="TryToSleep.png" alt="Circuit Diagram for Try To Sleep Project">
   </section>
 
   <section id="environment">
@@ -90,11 +90,9 @@
     <ul>
       <li><strong>Materials:</strong> The Arduino Uno is RoHS and WEEE compliant, limiting hazardous substances.
       </li>
-      <li><strong>Energy Efficiency:</strong> The circuit draws minimal power (~50 mA at 5V), ideal for USB or
-        solar power.</li>
-      <li><strong>Reusability:</strong> All components are modular and reusable, reducing electronic waste.</li>
+      <li><strong>Reusability:</strong> All components are modular and reusable, reducing electronic waste. They are made of recyclable materials.</li>
       <li><strong>Packaging & Shipping:</strong> Ordering all components from a single supplier helps minimize
-        carbon footprint.</li>
+        carbon footprint. Shipping cost is reduced as it is purchased from local manufacturers.</li>
     </ul>
   </section>
 
@@ -180,7 +178,7 @@
 
   <section id="code">
     <h2>Arduino Code</h2>
-    <p>The following Arduino code controls the system, lighting LEDs and activating the buzzer based on distance readings from the HC-SR04 sensor.</p>
+    <p>The following Arduino code controls the system.</p>
 <div class="code-container" style="position: relative;">
       <button class="copy-btn" onclick="copyCode()" 
               style="position:absolute; top:8px; right:8px; z-index:10;">
@@ -189,80 +187,140 @@
 
       <pre class="line-numbers">
  
-  <code id="arduinoCode" class="language-cpp">
-// Collision Warning System with Distance Sensor (HC-SR04)
-// Author: Ana Rodrigues
-// Oct 2, 2025
-// Object is farther than 50cm: Green LED lights up
-// Object is closer than 50 cm, but more than 10cm away: Yellow LED lights, buzzer plays 300Hz tone
-// Object is closer than 10cm: Red LED lights up, buzzer plays 500Hz tone
-
-//LED pins
-const int greenLED = 2;
-const int yellowLED = 3;
-const int redLED = 4;
-
-// Ultrasonic sensor pins
-const int trigPin = 9;
-const int echoPin = 10;
-
-// Passive buzzer pin
-const int buzzer = 11;
-
-void setup() {
-  pinMode(greenLED, OUTPUT);
-  pinMode(yellowLED, OUTPUT);
-  pinMode(redLED, OUTPUT);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  // Measure distance
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  long duration = pulseIn(echoPin, HIGH);
-  long distance = duration * 0.034 / 2;
-
-  Serial.print("Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
-  
-  //Error in measurement:
-  if (distance <= 0)
-    return;
-
-  //Too close:
-  if (distance <= 10) {
-    digitalWrite(greenLED, LOW);
-    digitalWrite(yellowLED, LOW);
-    digitalWrite(redLED, HIGH);
-    tone(buzzer, 500); // Play 500Hz tone
-    return;
-  }
-
-  //Midrange:
-  if (distance <= 30) {
-    digitalWrite(greenLED, LOW);
-    digitalWrite(yellowLED, HIGH);
-    digitalWrite(redLED, LOW);
-    tone(buzzer, 300); // Play 300Hz tone
-    return;
-  }
-
-  //Normal status:
-  digitalWrite(greenLED, HIGH);
-  digitalWrite(yellowLED, LOW);
-  digitalWrite(redLED, LOW);
-  noTone(buzzer); // stop buzzer
-
-  delay(100);
-}
+  <code id="arduinoCode" class="language-cpp">    
+      #include &lt;LiquidCrystal.h&gt;
+      #include &lt;Servo.h&gt;
+      
+      #define AlarmSND 6
+      #define ButtonPin 7
+      #define LEDPin 13
+      
+      LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+      Servo bedServo;
+      
+      // Time Tracking
+      int Hours = 7, Minutes = 29, Seconds = 55;
+      unsigned long lastTick = 0;
+      
+      // Alarm Logic
+      bool alarmActive = false;
+      bool alarmDeactivatedToday = false; 
+      unsigned long alarmStartTime = 0;
+      unsigned long lastServoMove = 0;
+      bool servoDir = true;
+      
+      void setup() {
+        lcd.begin(16, 2);
+        pinMode(AlarmSND, OUTPUT);
+        pinMode(LEDPin, OUTPUT);
+        pinMode(ButtonPin, INPUT_PULLUP);
+      
+        bedServo.attach(10);
+        bedServo.write(90);
+        
+        lcd.print("System Ready");
+        delay(1000);
+        lcd.clear();
+      }
+      
+      void loop() {
+        unsigned long now = millis();
+      
+        // 1. CLOCK LOGIC - Updated for stability
+        if (now - lastTick >= 1000) {
+          lastTick += 1000; 
+          Seconds++;
+          if (Seconds >= 60) { Seconds = 0; Minutes++; }
+          if (Minutes >= 60) { Minutes = 0; Hours++; }
+          if (Hours >= 24)   { Hours = 0; }
+          
+          if (Minutes != 30) { alarmDeactivatedToday = false; }
+          drawClock();
+        }
+      
+        // 2. TRIGGER ALARM
+        if (Hours == 7 && Minutes == 30 && Seconds == 0 && !alarmDeactivatedToday && !alarmActive) {
+            alarmActive = true;
+            alarmStartTime = now;
+        }
+      
+        // 3. STOP BUTTON
+        if (digitalRead(ButtonPin) == LOW && alarmActive) {
+            alarmActive = false;
+            alarmDeactivatedToday = true; 
+            noTone(AlarmSND);             
+            digitalWrite(LEDPin, LOW);
+            bedServo.write(90);           
+            lcd.setCursor(0, 1);
+            lcd.print("ALARM STOPPED   ");
+        }
+      
+        // 4. ALARM PHASES (10 Seconds Each)
+        if (alarmActive) {
+          unsigned long elapsed = now - alarmStartTime;
+      
+          if (elapsed < 10000) { 
+            // PHASE 1: 1 Beep + Solid LED
+            lcd.setCursor(0, 1);
+            lcd.print("PH1: 1 BEEP     ");
+            digitalWrite(LEDPin, HIGH);
+            if ((now - alarmStartTime) % 2000 < 100) tone(AlarmSND, 500); else noTone(AlarmSND);
+          } 
+          else if (elapsed < 20000) { 
+            // PHASE 2: 2 Beeps + Slow Flash + Servo
+            lcd.setCursor(0, 1);
+            lcd.print("PH2: 2 BEEP/SLOW");
+            
+            // LED Slow Flash (500ms)
+            digitalWrite(LEDPin, (now / 500) % 2);
+            
+            // 2 Beeps Logic
+            int beepCycle = (now % 1000);
+            if (beepCycle < 100 || (beepCycle > 200 && beepCycle < 300)) tone(AlarmSND, 600); else noTone(AlarmSND);
+      
+            // Servo Shake
+            if (now - lastServoMove >= 300) {
+              lastServoMove = now;
+              bedServo.write(servoDir ? 70 : 110);
+              servoDir = !servoDir;
+            }
+          } 
+          else if (elapsed < 30000) { 
+            // PHASE 3: Fast Flash + Tilt
+            lcd.setCursor(0, 1);
+            lcd.print("PH3: FAST TILT  ");
+            digitalWrite(LEDPin, (now / 100) % 2); // Fast Flash
+            tone(AlarmSND, 800);                   // Steady sound
+            bedServo.write(150);
+          }
+          else {
+            stopAlarm();
+          }
+        }
+      }
+      
+      void stopAlarm() {
+        noTone(AlarmSND);
+        digitalWrite(LEDPin, LOW);
+        bedServo.write(90);
+        alarmActive = false;
+        alarmDeactivatedToday = true;
+        lcd.setCursor(0, 1);
+        lcd.print("ALARM TIMEOUT   ");
+      }
+      
+      void drawClock() {
+        lcd.setCursor(0, 0);
+        lcd.print("Time: ");
+        if (Hours < 10) lcd.print('0');
+        lcd.print(Hours);
+        lcd.print(':');
+        if (Minutes < 10) lcd.print('0');
+        lcd.print(Minutes);
+        lcd.print(':');
+        if (Seconds < 10) lcd.print('0');
+        lcd.print(Seconds);
+      }
     </code>
   </pre>
 
